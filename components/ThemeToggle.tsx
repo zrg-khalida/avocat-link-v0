@@ -1,20 +1,19 @@
+"use client";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
-import { useRef } from "react";
-import { useTheme } from "@/lib/theme";
+import { useTheme } from "next-themes";
 
 export function ThemeToggle() {
-  const { theme, toggle } = useTheme();
-  const ref = useRef<HTMLButtonElement>(null);
-  const onClick = () => {
-    const r = ref.current?.getBoundingClientRect();
-    if (r) toggle({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
-    else toggle();
+  const { theme, setTheme } = useTheme();
+  
+  const toggle = () => {
+    setTheme(theme === "light" ? "dark" : "light");
   };
+
   return (
     <button
-      ref={ref}
-      onClick={onClick}
+      onClick={toggle}
       data-magnetic
       aria-label="Toggle theme"
       className="relative grid h-10 w-10 place-items-center rounded-xl surface hover:bg-secondary transition overflow-hidden"

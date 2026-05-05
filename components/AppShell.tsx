@@ -1,4 +1,7 @@
-import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Scale, Users, LayoutDashboard, MessageSquare, Briefcase,
@@ -6,7 +9,7 @@ import {
 } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { useAudit } from "@/lib/audit";
-import { supabase } from "@/integrations/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 import { NotificationsBell } from "./NotificationsBell";
 import { ThemeToggle } from "./ThemeToggle";
 import type { ComponentType } from "react";
@@ -30,8 +33,8 @@ const lawyerNav: NavItem[] = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   const user = useApp((s) => s.user);
   const setUser = useApp((s) => s.setUser);
-  const loc = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
+  const router = useRouter();
   const items = user?.role === "lawyer" ? lawyerNav : clientNav;
 
   const signOut = async () => {
@@ -43,9 +46,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         detail: "Session ended from sidebar",
       });
     }
-    try { await supabase.auth.signOut(); } catch { /* ignore */ }
+    try { 
+      const supabase = createClient();
+      await supabase.auth.signOut(); 
+    } catch { /* ignore */ }
     setUser(null);
-    navigate({ to: "/login" });
+    router.push("/login");
   };
 
   return (
@@ -53,7 +59,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Sidebar */}
       <aside className="hidden md:flex sticky top-0 h-screen w-[260px] flex-col p-4 border-r-2 border-border bg-[oklch(0.975_0.005_250)]">
         <div className="glass-strong flex h-full flex-col rounded-2xl p-4 shadow-md">
-          <Link to="/" className="flex items-center gap-2.5 px-2 py-1.5">
+          <Link href="/" className="flex items-center gap-2.5 px-2 py-1.5">
             <div className="relative grid h-9 w-9 place-items-center rounded-xl bg-[image:var(--gradient-primary)] ring-1 ring-accent/60">
               <Scale className="h-4.5 w-4.5 text-accent" strokeWidth={2.4} />
               <div className="absolute inset-0 rounded-xl bg-accent/20 blur-lg opacity-70" />
@@ -68,11 +74,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           <nav className="mt-6 flex flex-col gap-1">
             {items.map((it) => {
-              const active = loc.pathname === it.to || (it.to !== "/workspace" && loc.pathname.startsWith(it.to));
+              const active = pathname === it.to || (it.to !== "/workspace" && pathname.startsWith(it.to));
               return (
                 <Link
                   key={it.to}
-                  to={it.to}
+                  href={it.to}
                   className="relative px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <span className="relative z-10 inline-flex items-center gap-3">
@@ -115,9 +121,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             )}
 
             <div className="flex items-center gap-3 px-2 text-[11px] text-muted-foreground">
-              <Link to="/terms" className="hover:text-foreground">Terms</Link>
+              <Link href="/terms" className="hover:text-foreground">Terms</Link>
               <span>·</span>
-              <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
+              <Link href="/privacy" className="hover:text-foreground">Privacy</Link>
             </div>
           </div>
         </div>
@@ -136,17 +142,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <div className="hidden md:flex flex-1 max-w-md items-center gap-2 rounded-xl px-3 py-2 bg-[oklch(0.93_0.010_250)] border border-border">
                 <Search className="h-4 w-4 text-muted-foreground" />
                 <input
-                  placeholder="Search the suite…"
+                  placeholder="Search the suite..."
                   className="flex-1 bg-transparent text-sm outline-none"
                 />
-                <kbd className="hidden lg:inline-flex items-center gap-1 rounded-md bg-card px-1.5 py-0.5 text-[10px] text-muted-foreground border border-border">⌘K</kbd>
+                <kbd className="hidden lg:inline-flex items-center gap-1 rounded-md bg-card px-1.5 py-0.5 text-[10px] text-muted-foreground border border-border">Cmd+K</kbd>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <ThemeToggle />
               <NotificationsBell />
               <Link
-                to="/messages"
+                href="/messages"
                 data-magnetic
                 className="hidden sm:inline-flex items-center gap-2 rounded-xl bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground glow-primary"
               >
@@ -168,11 +174,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         <footer className="px-6 py-6 text-xs text-muted-foreground flex items-center justify-between">
           <div className="inline-flex items-center gap-2">
-            <FileText className="h-3 w-3" /> © 2026 Avocat-Link
+            <FileText className="h-3 w-3" /> &copy; 2026 Avocat-Link
           </div>
           <div className="flex items-center gap-3">
-            <Link to="/terms" className="hover:text-foreground">Terms</Link>
-            <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
+            <Link href="/terms" className="hover:text-foreground">Terms</Link>
+            <Link href="/privacy" className="hover:text-foreground">Privacy</Link>
           </div>
         </footer>
       </div>

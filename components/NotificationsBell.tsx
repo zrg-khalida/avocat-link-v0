@@ -1,7 +1,9 @@
+"use client";
+
 import { AnimatePresence, motion } from "framer-motion";
 import { Bell, BellOff, CheckCircle2, Clock4, Settings as Cog, XCircle } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import Link from "next/link";
 import { useApp } from "@/lib/store";
 import { CLIENT_NOTIFS, LAWYER_NOTIFS, toSemanticTone, type Notif } from "@/lib/notifications";
 import { CHANNEL_META, isMutedNow, useNotifSettings, type NotifChannel } from "@/lib/notif-settings";
@@ -91,7 +93,7 @@ export function NotificationsBell() {
               <div className="flex items-center gap-2">
                 <button onClick={markAll} className="text-[11px] text-primary hover:underline">Mark all read</button>
                 <Link
-                  to="/settings"
+                  href="/settings"
                   onClick={() => setOpen(false)}
                   className="grid h-7 w-7 place-items-center rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground"
                   aria-label="Notification settings"
