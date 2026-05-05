@@ -1,0 +1,58 @@
+# Version control
+.git
+.gitignore
+
+# Package managers
+node_modules
+pnpm-lock.yaml
+yarn.lock
+
+# Development
+.env.local
+.env.development
+.env.test
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Build artifacts
+dist
+build
+.next
+out
+
+# Cloudflare (no longer needed)
+wrangler.jsonc
+wrangler.toml
+.wrangler
+
+# Testing
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+vitest.config.ts
+src/test
+
+# Documentation
+*.md
+DEPLOYMENT_GUIDE.md
+VERCEL_SOLUTION.md
+VERIFICATION_REPORT.md
+
+# Scripts
+scripts/vercel-build-check.ps1
+scripts/vercel-build-check.sh
+scripts/scan-colors.ts
+
+# Supabase local (if using local development)
+supabase/
+.supabase
+
+# Misc
+*.log
+.DS_Store
+Thumbs.db
+bunfig.toml
